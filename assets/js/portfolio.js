@@ -285,8 +285,8 @@
      ===================================================================== */
   // Texto proprio para repositorios sem descricao no GitHub (a descricao do GitHub, se existir, vale mais que isto)
   var GH_TEXT = { hushrig: { name: "HushRig", pt: "Plugin VST3 de áudio para guitarra no PC, com noise gate de latência zero. Código aberto.", en: "VST3 guitar audio plugin for PC, with a zero-latency noise gate. Open source." } };
-  var GH_USER = "DevEduNunes", GH_SKIP = ["eduardonunes-site", "datanexos-site", GH_USER.toLowerCase()];
-  var GH_KEY = "en-gh-repos-v3", GH_TTL = 36e5, REPOS = [], repoList = $("#githubRepos");
+  var GH_USER = "DevEduNunes", GH_SKIP = ["eduardonunes-site", "datanexos-site", GH_USER.toLowerCase(), GH_USER.toLowerCase() + ".github.io"];
+  var GH_KEY = "en-gh-repos-v4", GH_TTL = 36e5, REPOS = [], repoList = $("#githubRepos");
   function ghCache() { try { var c = JSON.parse(localStorage.getItem(GH_KEY)); return c && Date.now() - c.t < GH_TTL ? c.d : null; } catch (e) { return null; } }
   function renderRepos() {
     if (!repoList) return;
