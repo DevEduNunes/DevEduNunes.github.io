@@ -18,6 +18,7 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/robotoslab-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/spacegrotesk-latin.woff2" crossorigin>
   <script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("js")</script>
+  <script>try{var t=localStorage.getItem("ferramentas-tema"),r=document.documentElement;r.dataset.theme=t==="light"?"light":"dark";if(t==="light")document.querySelector('meta[name="theme-color"]').content="#f7f6fa"}catch(e){document.documentElement.dataset.theme="dark"}</script>
   <link rel="stylesheet" href="assets/css/portfolio.css">
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"Person","name":"Eduardo Nunes","url":"https://eduardonunes.dev/","jobTitle":"Analista e Consultor de Dados","email":"contato@eduardonunes.dev","address":{"@type":"PostalAddress","addressLocality":"Anápolis","addressRegion":"GO","addressCountry":"BR"},"sameAs":["https://www.linkedin.com/in/eduardonunesgoncalves/","https://github.com/DevEduNunes","https://datanexos.com"]}
@@ -42,6 +43,7 @@
       <li><a href="#github" data-nav="github">GitHub</a></li>
       <li><a href="#linkedin" data-nav="linkedin">LinkedIn</a></li>
       <li><a href="#contato" data-nav="contato" data-en="Contact">Contato</a></li>
+      <li><button class="theme" id="theme" type="button"><span class="ic" aria-hidden="true">☀</span><span class="tx">Modo claro</span></button></li>
     </ul>
   </nav>
 </header>

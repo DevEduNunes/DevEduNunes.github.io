@@ -24,6 +24,39 @@
   };
   var langBtn = $("#lang"), langLabel = $("#langLabel");
 
+  /* =====================================================================
+     Tema (escuro / claro). A chave é a mesma do site das Ferramentas: como os dois
+     ficam no mesmo domínio, a escolha vale nos dois. O padrão é o escuro.
+     ===================================================================== */
+  var THEME_KEY = "ferramentas-tema";
+  var NET_DARK = { line: "138,91,216", dot: "165,139,230", lb: 0.07, lm: 0.34, db: 0.12, dm: 0.6 };
+  var NET_LIGHT = { line: "117,68,201", dot: "106,63,186", lb: 0.1, lm: 0.42, db: 0.2, dm: 0.62 };
+  var NET = NET_DARK;
+  var themeBtn = $("#theme");
+  function isLight() { return root.dataset.theme === "light"; }
+  function applyTheme() {
+    var l = isLight(), en = lang === "en";
+    if (themeBtn) {
+      var txt = l ? (en ? "Dark mode" : "Modo escuro") : (en ? "Light mode" : "Modo claro");
+      $(".ic", themeBtn).textContent = l ? "\u263E" : "\u2600";
+      $(".tx", themeBtn).textContent = txt;
+      themeBtn.title = txt;
+      themeBtn.setAttribute("aria-label", l ? (en ? "Switch to dark mode" : "Mudar para o modo escuro") : (en ? "Switch to light mode" : "Mudar para o modo claro"));
+    }
+    var m = $('meta[name="theme-color"]'); if (m) m.setAttribute("content", l ? "#f7f6fa" : "#030305");
+    NET = l ? NET_LIGHT : NET_DARK;
+    if (!animated && typeof draw === "function") { try { draw(0); } catch (e) {} }
+  }
+  function setTheme(next) {
+    root.dataset.theme = next;
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+    applyTheme();
+  }
+  if (themeBtn) themeBtn.addEventListener("click", function () { setTheme(isLight() ? "dark" : "light"); });
+  window.addEventListener("storage", function (e) {   // mudou em outra aba (inclusive nas Ferramentas)
+    if (e.key === THEME_KEY) { root.dataset.theme = e.newValue === "light" ? "light" : "dark"; applyTheme(); }
+  });
+
   function applyLang() {
     root.lang = lang === "en" ? "en" : "pt-BR";
     $$("[data-en]").forEach(function (el) {
@@ -39,6 +72,7 @@
     if (langLabel) langLabel.textContent = lang === "en" ? "EN" : "BR";
     var hintEl = $("#langHint"); if (hintEl) hintEl.lang = lang === "en" ? "pt-BR" : "en";   // o aviso fala o idioma oposto
     if (langBtn) langBtn.title = lang === "en" ? "Mudar para português" : "Switch to English";
+    applyTheme();
     renderDashes(); renderPosts(); renderRepos();
     var active = $(".prow.on"); if (active) playDash(active.getAttribute("data-i"), true);
   }
@@ -385,12 +419,12 @@
     ctx.lineWidth = 1;
     for (k = 0; k < edges.length; k++) {
       var a = P[edges[k][0]], b = P[edges[k][1]], depth = ((a[2] + b[2]) / 2 + 1) / 2;
-      ctx.strokeStyle = "rgba(138,91,216," + (cur.a * (0.07 + depth * 0.34)).toFixed(3) + ")";
+      ctx.strokeStyle = "rgba(" + NET.line + "," + (cur.a * (NET.lb + depth * NET.lm)).toFixed(3) + ")";
       ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
     }
     for (k = 0; k < N; k++) {
       var q = P[k], dq = (q[2] + 1) / 2;
-      ctx.fillStyle = "rgba(165,139,230," + (cur.a * (0.12 + dq * 0.6)).toFixed(3) + ")";
+      ctx.fillStyle = "rgba(" + NET.dot + "," + (cur.a * (NET.db + dq * NET.dm)).toFixed(3) + ")";
       ctx.beginPath(); ctx.arc(q[0], q[1], 0.9 + dq * 1.6, 0, 6.2832); ctx.fill();
     }
   }
