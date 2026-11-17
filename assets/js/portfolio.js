@@ -5,6 +5,7 @@
   var animated = root.classList.contains("js");
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+  function safeUrl(u) { return /^https:\/\//i.test(String(u)) ? String(u) : "#"; }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 
   /* =====================================================================
@@ -220,7 +221,7 @@
       var body = c.t === "line" ? chartLine(c) : c.t === "hbar" ? chartHbar(c) : c.t === "vbar" ? chartVbar(c) : chartDonut(c);
       return '<div class="card"><h4>' + esc(T(c.title)) + "</h4>" + body + "</div>";
     }).join("");
-    host.innerHTML = '<div class="dash"><div class="dash-h"><span>' + esc(T(D.title)) + '</span><button type="button" class="real" data-zoom="' + D.img + '" data-title="' + esc(T(D.title)) + '">' + (lang === "en" ? "See real dashboard" : "Ver painel real") + ' ↗</button></div><div class="kpis" style="--n:' + D.kpis.length + '">' + kp + '</div><div class="grid4">' + ch + "</div></div>";
+    host.innerHTML = '<div class="dash"><div class="dash-h"><span>' + esc(T(D.title)) + '</span><button type="button" class="real" data-zoom="' + esc(D.img) + '" data-title="' + esc(T(D.title)) + '">' + (lang === "en" ? "See real dashboard" : "Ver painel real") + ' ↗</button></div><div class="kpis" style="--n:' + D.kpis.length + '">' + kp + '</div><div class="grid4">' + ch + "</div></div>";
     var real = $(".real", host);
     if (real) real.addEventListener("click", function () { openZoom(real.getAttribute("data-zoom"), real.getAttribute("data-title")); });
   }
@@ -300,7 +301,7 @@
       var title = (lang === "en" && p.title_en) ? p.title_en : String(p.text).split("\n")[0].trim();
       if (title.length > 110) title = title.slice(0, 107).replace(/\s+\S*$/, "") + "...";
       var tag = lang === "en" ? " · PT" : "";
-      return '<li><a href="' + esc(p.url) + '" target="_blank" rel="noopener noreferrer"><span class="dt">' + date + tag + '</span><span class="tt">' + esc(title) + "</span></a></li>";
+      return '<li><a href="' + esc(safeUrl(p.url)) + '" target="_blank" rel="noopener noreferrer"><span class="dt">' + date + tag + '</span><span class="tt">' + esc(title) + "</span></a></li>";
     }).join("");
   }
   if (list) {
@@ -331,7 +332,7 @@
       function fd(v) { var d = new Date(v); return isNaN(d) ? "" : d.toLocaleDateString(LOC[lang], { day: "2-digit", month: "2-digit", year: "numeric" }); }
       var meta = [fd(r.created) && (lang === "en" ? "Created " : "Criado em ") + fd(r.created), fd(r.pushed) && (lang === "en" ? "Last commit " : "Último commit ") + fd(r.pushed)].filter(Boolean).join(" · ");
       var tc = r.techs.map(function (t) { return "<span>" + esc(t) + "</span>"; }).join("");
-      return '<li><a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer"><span class="rp"><span class="tt">' + esc(r.name) + '</span><span class="ds">' + esc(lang === "en" && r.descEn ? r.descEn : r.desc) + "</span>" + (meta ? '<span class="mt">' + esc(meta) + "</span>" : "") + (tc ? '<span class="tc">' + tc + "</span>" : "") + "</span></a></li>";
+      return '<li><a href="' + esc(safeUrl(r.url)) + '" target="_blank" rel="noopener noreferrer"><span class="rp"><span class="tt">' + esc(r.name) + '</span><span class="ds">' + esc(lang === "en" && r.descEn ? r.descEn : r.desc) + "</span>" + (meta ? '<span class="mt">' + esc(meta) + "</span>" : "") + (tc ? '<span class="tc">' + tc + "</span>" : "") + "</span></a></li>";
     }).join("");
   }
   function loadRepos() {
