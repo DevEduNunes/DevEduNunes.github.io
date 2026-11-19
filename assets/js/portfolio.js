@@ -305,7 +305,7 @@
     }).join("");
   }
   if (list) {
-    fetch("assets/data/linkedin-posts.json", { cache: "no-store" })
+    fetch("assets/data/linkedin-posts.json")
       .then(function (r) { return r.ok ? r.json() : []; })
       .catch(function () { return []; })
       .then(function (posts) {
