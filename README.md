@@ -1,16 +1,16 @@
 # Eduardo Nunes — Portfólio
 
-Site estático (HTML, CSS e JS puros, sem build) publicado no GitHub Pages em https://eduardonunes.dev.
+Site estático (HTML, CSS e JS puros, sem build) hospedado numa VPS (Dokploy) em https://eduardonunes.dev.
 
 ## Publicação
 
-Todo push na `master` publica sozinho pelo workflow `.github/workflows/pages.yml`:
+Todo push na `master` dispara um webhook do GitHub para o Dokploy, que reconstrói a imagem a partir do `Dockerfile`:
 
 1. `.github/version-assets.sh` acrescenta `?v=<hash>` nos CSS/JS referenciados pelos HTMLs (cache busting).
-2. A pasta do site é montada sem `.git`, `.github` e `README.md`.
-3. O resultado é enviado ao GitHub Pages.
+2. Só `index.html`, `404.html`, `assets/` e `.well-known/` entram na imagem.
+3. O nginx (`nginx.conf`) serve o site na porta 8080; o Traefik do Dokploy faz o HTTPS.
 
-O workflow não usa segredos, só as permissões padrão de deploy do Pages.
+O webhook usa a URL de deploy do app no Dokploy (aba Deployments). Não há segredos no repositório.
 
 ## Estrutura
 
@@ -23,8 +23,7 @@ O workflow não usa segredos, só as permissões padrão de deploy do Pages.
 
 ## Domínio e DNS
 
-- `CNAME` na raiz aponta para `eduardonunes.dev`.
-- DNS no Cloudflare: 4 registros `A` do GitHub Pages (185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153) e `CNAME www` para `devedununes.github.io`.
+- DNS no Cloudflare (com proxy): um registro `A` de `eduardonunes.dev` para o IP da VPS e `CNAME www` para `eduardonunes.dev`. Modo SSL/TLS: Completo.
 - `contato@eduardonunes.dev` é um alias (Cloudflare Email Routing); o endereço real não fica no repositório.
 
 ## Cuidados
